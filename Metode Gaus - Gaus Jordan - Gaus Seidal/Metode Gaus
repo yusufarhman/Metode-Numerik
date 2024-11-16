@@ -1,0 +1,75 @@
+#include <stdio.h>
+
+void tampilkanMatriks(float matriks[][10], int n) {
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j <= n; j++) {
+            printf("%.2f\t", matriks[i][j]);
+        }
+        printf("\n");
+    }
+    printf("\n");
+}
+
+void eliminasiGauss(float matriks[][10], int n) {
+    float temp;
+    // Eliminasi maju (membuat matriks segitiga atas)
+    for(int i = 0; i < n-1; i++) {
+        
+        for(int j = i+1; j < n; j++) {
+            temp = matriks[j][i] / matriks[i][i];
+            for(int k = i; k <= n; k++) {
+                matriks[j][k] = matriks[j][k] - (matriks[i][k] * temp);
+            }
+        }
+        
+        printf("Langkah %d:\n", i + 1);
+        tampilkanMatriks(matriks, n);
+    }
+}
+
+void substitusiMundur(float matriks[][10], float solusi[], int n) {
+    // Substitusi mundur untuk mendapatkan nilai variabel
+    solusi[n-1] = matriks[n-1][n] / matriks[n-1][n-1];
+    
+    for(int i = n-2; i >= 0; i--) {
+        solusi[i] = matriks[i][n];
+        for(int j = i+1; j < n; j++) {
+            solusi[i] = solusi[i] - matriks[i][j] * solusi[j];
+        }
+        solusi[i] = solusi[i] / matriks[i][i];
+    }
+}
+
+int main() {
+    float matriks[10][10];
+    float solusi[10];
+    int n;
+    
+    printf("Masukkan ukuran matriks (maksimal 10): ");
+    scanf("%d", &n);
+    
+    printf("Masukkan elemen matriks augmented [A|b]:\n");
+    for(int i = 0; i < n; i++) {
+        for(int j = 0; j <= n; j++) {
+            printf("Matriks[%d][%d]: ", i+1, j+1);
+            scanf("%f", &matriks[i][j]);
+        }
+    }
+    
+    printf("\nMatriks awal:\n");
+    tampilkanMatriks(matriks, n);
+    
+    eliminasiGauss(matriks, n);
+    
+    printf("Matriks segitiga atas:\n");
+    tampilkanMatriks(matriks, n);
+    
+    substitusiMundur(matriks, solusi, n);
+    
+    printf("Solusi:\n");
+    for(int i = 0; i < n; i++) {
+        printf("x%d = %.2f\n", i+1, solusi[i]);
+    }
+    
+    return 0;
+}
